@@ -16,3 +16,4 @@ function createLimiter(limit, message) {
 
 export const apiLimiter = createLimiter(300, 'Too many requests. Please slow down and try again shortly.');
 export const authLimiter = createLimiter(20, 'Too many attempts. Please wait a few minutes and try again.');
+export const contactLimiter = createLimiter(5, 'You have sent several messages recently. Please try again later.');

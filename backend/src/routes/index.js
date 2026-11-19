@@ -2,6 +2,7 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import adminRoutes from './adminRoutes.js';
 import authRoutes from './authRoutes.js';
+import contactRoutes from './contactRoutes.js';
 import dashboardRoutes from './dashboardRoutes.js';
 import userRoutes from './userRoutes.js';
 
@@ -14,6 +15,7 @@ router.get('/health', (req, res) => {
 
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
+router.use('/contact', contactRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/admin', adminRoutes);
 
