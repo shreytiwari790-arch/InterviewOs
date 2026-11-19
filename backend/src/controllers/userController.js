@@ -13,3 +13,8 @@ export async function changePassword(req, res) {
   res.cookie(AUTH_COOKIE_NAME, createSessionToken(user), authCookieOptions());
   res.json({ message: 'Password updated. Other devices have been signed out.' });
 }
+
+export async function joinProWaitlist(req, res) {
+  const joinedAt = await userService.joinProWaitlist(req.user.id);
+  res.json({ proWaitlist: { joined: true, joinedAt }, message: 'You are on the Pro waitlist.' });
+}

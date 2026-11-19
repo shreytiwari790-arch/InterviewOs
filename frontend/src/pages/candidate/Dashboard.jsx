@@ -1,22 +1,32 @@
-import { Link } from 'react-router';
+import { useEffect } from 'react';
+import { Link, useLocation } from 'react-router';
 import {
   ArrowRight,
   Award,
   BarChart3,
+  Building2,
+  CalendarDays,
   Check,
   CheckCircle2,
   FileText,
   FileUp,
   History,
+  Layers,
+  Lightbulb,
   LineChart,
   PlayCircle,
   RotateCcw,
   Sparkles,
   Target,
 } from 'lucide-react';
+import { CompanyPerformance } from '../../components/dashboard/CompanyPerformance';
+import { FocusPlan } from '../../components/dashboard/FocusPlan';
+import { PracticeActivity } from '../../components/dashboard/PracticeActivity';
+import { ProUpgradeCard } from '../../components/dashboard/ProUpgradeCard';
 import { RecentInterviews } from '../../components/dashboard/RecentInterviews';
 import { ScoreRing } from '../../components/dashboard/ScoreRing';
 import { ScoreTrendChart } from '../../components/dashboard/ScoreTrendChart';
+import { SectionBreakdown } from '../../components/dashboard/SectionBreakdown';
 import { TopicPerformance } from '../../components/dashboard/TopicPerformance';
 import { Alert } from '../../components/ui/Alert';
 import { Button } from '../../components/ui/Button';
@@ -262,6 +272,12 @@ export default function Dashboard() {
   const { data, error, isLoading, reload } = useApi((signal) => dashboardService.getCandidateDashboard(signal));
   const isInitialLoad = isLoading && !data;
   const active = data?.activeInterview;
+  const { hash } = useLocation();
+
+  // Links such as /dashboard#pro (from the pricing page) scroll to their section once it has rendered.
+  useEffect(() => {
+    if (data && hash) document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+  }, [data, hash]);
 
   return (
     <div className="space-y-6">
@@ -298,7 +314,7 @@ export default function Dashboard() {
 
       <JourneyStrip data={data} />
 
-      <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
+      <div className="grid gap-6 lg:grid-cols-3">
         <Panel
           icon={LineChart}
           title="Performance trend"
@@ -319,6 +335,29 @@ export default function Dashboard() {
           )}
         </Panel>
 
+        <Panel icon={CalendarDays} title="Practice activity" description="Last 4 weeks">
+          {isInitialLoad ? <LoadingRows /> : <PracticeActivity timestamps={data?.activity ?? []} />}
+        </Panel>
+
+        <Panel
+          icon={Layers}
+          title="Section performance"
+          description="Average score per interview section, weakest first"
+          className="lg:col-span-2"
+        >
+          {isInitialLoad ? (
+            <LoadingRows />
+          ) : data?.categories.length ? (
+            <SectionBreakdown categories={data.categories} />
+          ) : (
+            <EmptyState
+              icon={Layers}
+              title="No section scores yet"
+              description="After your first report you will see how you do in MCQs, coding, core CS, scenarios and HR."
+            />
+          )}
+        </Panel>
+
         <Panel icon={Target} title="Topics" description="From your last 10 reports">
           {isInitialLoad ? (
             <LoadingRows />
@@ -329,6 +368,39 @@ export default function Dashboard() {
               icon={Target}
               title="No topic data yet"
               description="Strong and weak topics appear after your first report."
+            />
+          )}
+        </Panel>
+
+        <Panel
+          icon={Lightbulb}
+          title="Your focus plan"
+          description="What to work on before your next interview"
+          className="lg:col-span-2"
+        >
+          {isInitialLoad ? (
+            <LoadingRows />
+          ) : data?.latestAdvice ? (
+            <FocusPlan advice={data.latestAdvice} weakTopics={data.topics.weak} />
+          ) : (
+            <EmptyState
+              icon={Lightbulb}
+              title="Your plan appears after your first report"
+              description="We turn your weak topics and the report’s recommendations into a short list of next steps."
+            />
+          )}
+        </Panel>
+
+        <Panel icon={Building2} title="By company" description="Average across your attempts">
+          {isInitialLoad ? (
+            <LoadingRows />
+          ) : data?.companies.length ? (
+            <CompanyPerformance companies={data.companies} />
+          ) : (
+            <EmptyState
+              icon={Building2}
+              title="No companies yet"
+              description="Each company you practise for is tracked here."
             />
           )}
         </Panel>
@@ -378,6 +450,8 @@ export default function Dashboard() {
           {isInitialLoad ? <LoadingRows /> : data && <ResumeSnapshot data={data} />}
         </Panel>
       </div>
+
+      {data && <ProUpgradeCard isOnWaitlist={data.proWaitlist.joined} />}
     </div>
   );
 }

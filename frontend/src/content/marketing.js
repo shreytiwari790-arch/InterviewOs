@@ -61,20 +61,38 @@ export const faqs = [
 ];
 
 /**
- * Pricing plans. Payments are not connected yet: paid plans currently lead to sign-up,
- * and the institution plan leads to the contact form. Update prices and limits here.
+ * Features planned for InterviewOS Pro. Pro is not built yet: it is shown as "coming soon"
+ * on the pricing page and the dashboard, and candidates can join a waitlist.
+ */
+export const proFeatures = [
+  {
+    title: 'A fresh interview every day',
+    text: 'A new daily mock interview, built around your resume and target company.',
+  },
+  {
+    title: 'Important topics for each company',
+    text: 'The topics each company and role focuses on most, in one place.',
+  },
+  { title: 'Unlimited mock interviews', text: 'Practise as often as you like, for every company and role track.' },
+  { title: 'Weekly study plan', text: 'A plan built from your weakest topics and sections, updated every week.' },
+];
+
+/**
+ * Pricing plans. Payments are not connected yet: Starter is everything available today,
+ * Pro is coming soon (waitlist), and the institution plan leads to the contact form.
  */
 export const pricingPlans = [
   {
     name: 'Starter',
     price: '₹0',
-    period: 'forever',
-    description: 'Try InterviewOS and get a feel for company-style interviews.',
+    period: 'free in early access',
+    description: 'Everything InterviewOS offers today, free while we are in early access.',
     features: [
-      '2 full mock interviews per month',
-      'Resume analysis',
-      'MCQ and resume-based questions',
-      'Score and summary report',
+      'Resume analysis, including scanned PDFs',
+      'Mock interviews for every company and role',
+      'MCQ, coding, core CS, scenario and HR questions',
+      'Answer-by-answer feedback',
+      'Detailed report with PDF download',
     ],
     cta: 'Try for free',
     href: '/register',
@@ -82,18 +100,12 @@ export const pricingPlans = [
   {
     name: 'Pro',
     price: '₹299',
-    period: 'per month',
-    description: 'For candidates preparing seriously for upcoming interviews.',
-    features: [
-      '30 full mock interviews per month',
-      'All six question categories',
-      'Every company and role track',
-      'Detailed reports with PDF download',
-      'Answer-by-answer feedback',
-      'Optional integrity mode',
-    ],
-    cta: 'Start with Pro',
-    href: '/register',
+    period: 'per month at launch',
+    badge: 'Coming soon',
+    description: 'For candidates preparing every day for their target companies.',
+    features: ['Everything in Starter', ...proFeatures.map(({ title }) => title), 'Progress tracking across companies'],
+    cta: 'Join the waitlist',
+    href: 'pro-waitlist',
     isFeatured: true,
   },
   {

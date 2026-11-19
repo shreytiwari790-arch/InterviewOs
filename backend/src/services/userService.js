@@ -24,3 +24,13 @@ export async function changePassword(userId, { currentPassword, newPassword }) {
   await user.save();
   return user;
 }
+
+/** Adds the user to the Pro launch waitlist. Joining again keeps the original date. */
+export async function joinProWaitlist(userId) {
+  await User.updateOne(
+    { _id: userId, proWaitlistJoinedAt: { $exists: false } },
+    { $set: { proWaitlistJoinedAt: new Date() } },
+  );
+  const user = await User.findById(userId).select('proWaitlistJoinedAt');
+  return user.proWaitlistJoinedAt;
+}

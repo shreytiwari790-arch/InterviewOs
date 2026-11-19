@@ -14,6 +14,8 @@ const userSchema = new mongoose.Schema(
     passwordResetTokenHash: { type: String, select: false },
     passwordResetExpiresAt: { type: Date, select: false },
     lastLoginAt: Date,
+    // Set when the candidate asks to be told about the Pro plan. Pro itself is not built yet.
+    proWaitlistJoinedAt: Date,
   },
   {
     timestamps: true,

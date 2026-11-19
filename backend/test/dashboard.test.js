@@ -17,6 +17,11 @@ describe('candidate dashboard and profile', () => {
     assert.deepEqual(body.stats, { completedInterviews: 0, averageScore: null, bestScore: null });
     assert.deepEqual(body.recentInterviews, []);
     assert.deepEqual(body.scoreTrend, []);
+    assert.deepEqual(body.categories, []);
+    assert.deepEqual(body.companies, []);
+    assert.equal(body.latestAdvice, null);
+    assert.deepEqual(body.activity, []);
+    assert.deepEqual(body.proWaitlist, { joined: false, joinedAt: null });
     assert.deepEqual(
       body.nextSteps.map((step) => step.action),
       ['upload_resume', 'start_interview'],
@@ -67,6 +72,12 @@ describe('candidate dashboard and profile', () => {
         user: user.id,
         overallScore: score,
         topicScores: topics,
+        categoryScores: [
+          { category: 'mcq', score: score + 10 },
+          { category: 'hr', score: score - 20 },
+        ],
+        weakTopics: ['DBMS'],
+        recommendations: [`Revise normalisation (attempt ${index + 1})`],
       });
     }
     await Interview.create({
@@ -89,6 +100,28 @@ describe('candidate dashboard and profile', () => {
     assert.deepEqual(body.topics.strong, [{ topic: 'OOP', score: 85, attempts: 2 }]);
     assert.deepEqual(body.topics.weak, [{ topic: 'DBMS', score: 45, attempts: 2 }]);
     assert.ok(body.nextSteps.some((step) => step.action === 'review_topic' && step.topic === 'DBMS'));
+    assert.deepEqual(body.categories, [
+      { category: 'hr', score: 50, attempts: 2 },
+      { category: 'mcq', score: 80, attempts: 2 },
+    ]);
+    assert.equal(body.companies.length, 1, 'other users’ companies are excluded');
+    assert.deepEqual(
+      { ...body.companies[0], lastCompletedAt: undefined },
+      { company: 'TCS', attempts: 2, averageScore: 70, bestScore: 80, lastCompletedAt: undefined },
+    );
+    assert.equal(body.latestAdvice.company, 'TCS');
+    assert.deepEqual(body.latestAdvice.recommendations, ['Revise normalisation (attempt 2)']);
+    assert.equal(body.activity.length, 2);
+  });
+
+  it('adds the candidate to the Pro waitlist once', async () => {
+    const { agent } = await signedInAgent(server.app, { email: 'waitlist@example.com' });
+    const first = await agent.post('/api/users/me/pro-waitlist').expect(200);
+    assert.equal(first.body.proWaitlist.joined, true);
+    const second = await agent.post('/api/users/me/pro-waitlist').expect(200);
+    assert.equal(second.body.proWaitlist.joinedAt, first.body.proWaitlist.joinedAt, 'joining twice keeps the date');
+    const { body } = await agent.get('/api/dashboard').expect(200);
+    assert.equal(body.proWaitlist.joined, true);
   });
 
   it('requires authentication', async () => {

@@ -2,7 +2,9 @@ import { Link } from 'react-router';
 import { Check } from 'lucide-react';
 import { pricingPlans } from '../../content/marketing';
 import { cn } from '../../utils/cn';
+import { useAuth } from '../../hooks/useAuth';
 import { useStartCta } from '../../hooks/useStartCta';
+import { paths } from '../../utils/paths';
 import { buttonClasses } from '../ui/buttonStyles';
 import { SectionHeading } from './SectionHeading';
 
@@ -18,8 +20,19 @@ function PlanLink({ href, className, children }) {
   );
 }
 
-export function Pricing() {
+/** Visitors sign up first; signed-in candidates join the waitlist from their dashboard. */
+function usePlanHref() {
+  const { user } = useAuth();
   const startCta = useStartCta();
+  return (href) => {
+    if (href === '/register') return startCta.to;
+    if (href === 'pro-waitlist') return user ? `${paths.dashboard}#pro` : paths.register;
+    return href;
+  };
+}
+
+export function Pricing() {
+  const planHref = usePlanHref();
 
   return (
     <section id="pricing" className="scroll-mt-20 py-24 sm:py-28">
@@ -27,7 +40,7 @@ export function Pricing() {
         <SectionHeading
           eyebrow="Pricing"
           title="Simple plans for every stage of prep"
-          description="Start free. Upgrade when you are preparing for interviews week after week."
+          description="Start free today. Pro, with a daily interview and company-wise important topics, is coming soon."
         />
 
         <div className="mt-16 grid gap-6 lg:grid-cols-3 lg:items-stretch">
@@ -41,9 +54,10 @@ export function Pricing() {
                   : 'border border-slate-200 bg-white shadow-xs',
               )}
             >
-              {plan.isFeatured && (
-                <span className="absolute -top-3.5 left-8 rounded-full bg-brand-500 px-3 py-1 text-xs font-semibold text-white">
-                  Most popular
+              {plan.badge && (
+                <span className="absolute -top-3.5 left-8 inline-flex items-center gap-1.5 rounded-full bg-brand-500 px-3 py-1 text-xs font-semibold text-white">
+                  <span className="size-1.5 animate-pulse rounded-full bg-white" />
+                  {plan.badge}
                 </span>
               )}
               <h3 className={cn('text-lg font-semibold', plan.isFeatured && 'text-white')}>{plan.name}</h3>
@@ -84,7 +98,7 @@ export function Pricing() {
               </ul>
 
               <PlanLink
-                href={plan.href === '/register' ? startCta.to : plan.href}
+                href={planHref(plan.href)}
                 className={buttonClasses({
                   variant: plan.isFeatured ? 'primary' : 'secondary',
                   size: 'lg',
@@ -96,7 +110,10 @@ export function Pricing() {
             </div>
           ))}
         </div>
-        <p className="mt-10 text-center text-sm text-ink-500">All prices are in INR.</p>
+        <p className="mt-10 text-center text-sm text-ink-500">
+          All prices are in INR. Pro is not available to buy yet; join the waitlist and we will let you know when it
+          launches.
+        </p>
       </div>
     </section>
   );

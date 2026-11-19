@@ -10,19 +10,28 @@ const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 export async function getPlatformOverview() {
   const sevenDaysAgo = new Date(Date.now() - 7 * DAY_MS);
 
-  const [totalUsers, newUsersThisWeek, admins, resumesAnalyzed, interviewsByStatus, [scores], recentUsers] =
-    await Promise.all([
-      User.countDocuments(),
-      User.countDocuments({ createdAt: { $gte: sevenDaysAgo } }),
-      User.countDocuments({ role: 'admin' }),
-      Resume.countDocuments({ status: 'analyzed' }),
-      Interview.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]),
-      Interview.aggregate([
-        { $match: { status: 'completed', overallScore: { $type: 'number' } } },
-        { $group: { _id: null, average: { $avg: '$overallScore' } } },
-      ]),
-      User.find().sort({ createdAt: -1 }).limit(5),
-    ]);
+  const [
+    totalUsers,
+    newUsersThisWeek,
+    admins,
+    resumesAnalyzed,
+    interviewsByStatus,
+    [scores],
+    recentUsers,
+    proWaitlist,
+  ] = await Promise.all([
+    User.countDocuments(),
+    User.countDocuments({ createdAt: { $gte: sevenDaysAgo } }),
+    User.countDocuments({ role: 'admin' }),
+    Resume.countDocuments({ status: 'analyzed' }),
+    Interview.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]),
+    Interview.aggregate([
+      { $match: { status: 'completed', overallScore: { $type: 'number' } } },
+      { $group: { _id: null, average: { $avg: '$overallScore' } } },
+    ]),
+    User.find().sort({ createdAt: -1 }).limit(5),
+    User.countDocuments({ proWaitlistJoinedAt: { $exists: true } }),
+  ]);
 
   const statusCounts = Object.fromEntries(interviewsByStatus.map(({ _id, count }) => [_id, count]));
 
@@ -36,6 +45,7 @@ export async function getPlatformOverview() {
     },
     averageScore: scores ? Math.round(scores.average) : null,
     recentUsers,
+    proWaitlist,
   };
 }
 

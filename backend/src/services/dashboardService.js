@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Interview } from '../models/Interview.js';
 import { InterviewReport } from '../models/InterviewReport.js';
 import { Resume } from '../models/Resume.js';
+import { User } from '../models/User.js';
 import { getLatestProfile } from './resumeService.js';
 
 const RECENT_LIMIT = 5;
@@ -9,6 +10,9 @@ const TREND_LIMIT = 10;
 const TOPIC_REPORT_LIMIT = 10; // Topic strengths are based on the most recent reports only.
 const STRONG_TOPIC_THRESHOLD = 70;
 const WEAK_TOPIC_THRESHOLD = 60;
+const COMPANY_LIMIT = 6;
+const ACTIVITY_DAYS = 35; // Enough for a four-week calendar in any time zone.
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 function summarizeTopics(reports) {
   const totals = new Map();
@@ -35,6 +39,20 @@ function summarizeTopics(reports) {
       .sort((a, b) => a.score - b.score)
       .slice(0, 5),
   };
+}
+
+/** Average score per question category (MCQ, Core CS, HR…), weakest first. */
+function summarizeCategories(reports) {
+  const totals = new Map();
+  for (const { categoryScores } of reports) {
+    for (const { category, score } of categoryScores) {
+      const entry = totals.get(category) ?? { sum: 0, count: 0 };
+      totals.set(category, { sum: entry.sum + score, count: entry.count + 1 });
+    }
+  }
+  return [...totals]
+    .map(([category, { sum, count }]) => ({ category, score: Math.round(sum / count), attempts: count }))
+    .sort((a, b) => a.score - b.score);
 }
 
 function buildNextSteps({ resume, activeInterview, completedCount, weakTopics }) {
@@ -83,12 +101,42 @@ export async function getCandidateDashboard(userId) {
         $group: { _id: null, count: { $sum: 1 }, average: { $avg: '$overallScore' }, best: { $max: '$overallScore' } },
       },
     ]),
-    InterviewReport.find({ user: userId }).sort({ createdAt: -1 }).limit(TOPIC_REPORT_LIMIT).select('topicScores'),
+    InterviewReport.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .limit(TOPIC_REPORT_LIMIT)
+      .select('interview topicScores categoryScores weakTopics recommendations createdAt'),
     getLatestProfile(userId),
+  ]);
+
+  const [companyPerformance, recentActivity, waitlistUser] = await Promise.all([
+    Interview.aggregate([
+      { $match: { user: userObjectId, status: 'completed', overallScore: { $type: 'number' } } },
+      {
+        $group: {
+          _id: '$company.name',
+          attempts: { $sum: 1 },
+          average: { $avg: '$overallScore' },
+          best: { $max: '$overallScore' },
+          lastCompletedAt: { $max: '$completedAt' },
+        },
+      },
+      { $sort: { lastCompletedAt: -1 } },
+      { $limit: COMPANY_LIMIT },
+    ]),
+    Interview.find({
+      user: userId,
+      status: 'completed',
+      completedAt: { $gte: new Date(Date.now() - ACTIVITY_DAYS * DAY_MS) },
+    }).select('completedAt'),
+    User.findById(userId).select('proWaitlistJoinedAt'),
   ]);
 
   const completedCount = scoreSummary?.count ?? 0;
   const topics = summarizeTopics(recentReports);
+  const latestReport = recentReports[0];
+  const latestReportInterview = latestReport
+    ? recentCompleted.find((interview) => interview.id === latestReport.interview.toString())
+    : null;
 
   return {
     resume: resume && { id: resume.id, fileName: resume.fileName, status: resume.status, updatedAt: resume.updatedAt },
@@ -128,6 +176,30 @@ export async function getCandidateDashboard(userId) {
         company: interview.company.name,
       })),
     topics,
+    categories: summarizeCategories(recentReports),
+    companies: companyPerformance.map(({ _id, attempts, average, best, lastCompletedAt }) => ({
+      company: _id,
+      attempts,
+      averageScore: Math.round(average),
+      bestScore: Math.round(best),
+      lastCompletedAt,
+    })),
+    latestAdvice: latestReport
+      ? {
+          interviewId: latestReport.interview.toString(),
+          company: latestReportInterview?.company.name ?? null,
+          role: latestReportInterview?.role.name ?? null,
+          createdAt: latestReport.createdAt,
+          weakTopics: latestReport.weakTopics.slice(0, 5),
+          recommendations: latestReport.recommendations.slice(0, 4),
+        }
+      : null,
+    // Raw timestamps: the browser groups them into days in the candidate's own time zone.
+    activity: recentActivity.map(({ completedAt }) => completedAt),
+    proWaitlist: {
+      joined: Boolean(waitlistUser?.proWaitlistJoinedAt),
+      joinedAt: waitlistUser?.proWaitlistJoinedAt ?? null,
+    },
     nextSteps: buildNextSteps({ resume, activeInterview, completedCount, weakTopics: topics.weak }),
   };
 }

@@ -10,5 +10,6 @@ const router = Router();
 router.use(requireAuth);
 router.patch('/me', validate(updateProfileSchema), userController.updateProfile);
 router.patch('/me/password', authLimiter, validate(changePasswordSchema), userController.changePassword);
+router.post('/me/pro-waitlist', userController.joinProWaitlist);
 
 export default router;

@@ -106,6 +106,7 @@ export default function AdminOverview() {
                 <MetricRow label="Resumes analysed" value={data?.resumesAnalyzed ?? 0} />
                 <MetricRow label="Interviews created" value={data?.interviews.total ?? 0} />
                 <MetricRow label="In progress now" value={data?.interviews.inProgress ?? 0} />
+                <MetricRow label="Pro waitlist sign-ups" value={data?.proWaitlist ?? 0} />
               </>
             )}
           </CardBody>

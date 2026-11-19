@@ -24,6 +24,7 @@ describe('admin API', () => {
     assert.deepEqual(body.interviews, { total: 0, completed: 0, inProgress: 0 });
     assert.equal(body.averageScore, null);
     assert.equal(body.recentUsers[0].passwordHash, undefined);
+    assert.equal(typeof body.proWaitlist, 'number');
   });
 
   it('lists, searches and filters users with pagination', async () => {
