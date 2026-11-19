@@ -34,27 +34,27 @@ export function Footer() {
       ];
 
   return (
-    <footer className="border-t border-slate-200/80 bg-white">
+    <footer className="border-t border-slate-200 bg-slate-900">
       <div className="mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 md:grid-cols-[1.4fr_2fr]">
         <div className="max-w-xs">
-          <Logo />
-          <p className="mt-5 text-sm leading-relaxed text-ink-500">
+          <Logo tone="light" />
+          <p className="mt-5 text-sm leading-relaxed text-slate-400">
             AI-powered interview preparation built around your resume and the company you want to join.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
           {[...columns, { title: 'Account', links: accountLinks }].map(({ title, links }) => (
             <div key={title}>
-              <p className="text-sm font-semibold text-ink-900">{title}</p>
-              <ul className="mt-4 space-y-3 text-sm text-ink-500">
+              <p className="text-sm font-semibold tracking-wide text-slate-200 uppercase">{title}</p>
+              <ul className="mt-4 space-y-3 text-sm text-slate-400">
                 {links.map(({ href, to, label }) => (
                   <li key={label}>
                     {to ? (
-                      <Link to={to} className="transition-colors hover:text-brand-700">
+                      <Link to={to} className="transition-colors hover:text-brand-400">
                         {label}
                       </Link>
                     ) : (
-                      <a href={href} className="transition-colors hover:text-brand-700">
+                      <a href={href} className="transition-colors hover:text-brand-400">
                         {label}
                       </a>
                     )}
@@ -65,8 +65,8 @@ export function Footer() {
           ))}
         </div>
       </div>
-      <div className="border-t border-slate-200/80">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-6 text-xs text-ink-500 sm:flex-row sm:justify-between sm:px-8">
+      <div className="border-t border-slate-700/60">
+        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-6 text-xs text-slate-500 sm:flex-row sm:justify-between sm:px-8">
           <p>© {new Date().getFullYear()} InterviewOS. All rights reserved.</p>
           <p>Company names identify preparation tracks only and do not imply affiliation.</p>
         </div>

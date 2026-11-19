@@ -1,5 +1,6 @@
 import { api } from './api';
 
+// Auth service: maps each auth action to its corresponding backend API endpoint.
 export const authService = {
   getCurrentUser: () => api.get('/auth/me'),
   login: (credentials) => api.post('/auth/login', credentials),

@@ -1,5 +1,7 @@
-export const API_BASE_URL = `${(import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')}/api`;
+// Base URL for all API requests, derived from the VITE_API_URL environment variable.
+const API_BASE_URL = `${(import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')}/api`;
 
+// Custom error class that carries the HTTP status code and field-level validation details.
 export class ApiError extends Error {
   constructor(message, status, details = []) {
     super(message);
@@ -9,6 +11,8 @@ export class ApiError extends Error {
   }
 }
 
+// Central fetch wrapper: sends every request with cookies included (for session auth)
+// and normalises error responses into an ApiError for consistent handling across the app.
 async function request(path, { method = 'GET', body, signal } = {}) {
   const isFormData = body instanceof FormData;
   let response;
@@ -34,6 +38,7 @@ async function request(path, { method = 'GET', body, signal } = {}) {
   return data;
 }
 
+// Shorthand helpers so callers don't have to pass the method manually.
 export const api = {
   get: (path, options) => request(path, options),
   post: (path, body, options) => request(path, { ...options, method: 'POST', body }),
