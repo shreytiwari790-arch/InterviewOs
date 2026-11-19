@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { ArrowRight, BookOpen, FileUp, PlayCircle, RotateCcw } from 'lucide-react';
 import { interviewPath, paths, upcomingPaths } from '../../utils/paths';
-
+// interviewpth path upcoming
 const stepConfig = {
   upload_resume: { icon: FileUp, to: () => paths.resume },
   start_interview: { icon: PlayCircle, to: () => paths.newInterview },
