@@ -100,7 +100,12 @@ describe('authentication', () => {
 
   it('reports health and returns JSON for unknown routes', async () => {
     const health = await request(server.app).get('/api/health').expect(200);
+    assert.equal(health.body.status, 'ok');
     assert.equal(health.body.databaseConnected, true);
+    assert.equal(typeof health.body.uptimeSeconds, 'number');
+    assert.equal(health.headers['ratelimit'], undefined, 'health checks are not rate limited');
+    assert.ok(!JSON.stringify(health.body).includes('test-secret'), 'no secrets in health output');
+    await request(server.app).head('/api/health').expect(200);
     await request(server.app).get('/api/does-not-exist').expect(404);
   });
 });

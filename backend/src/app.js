@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { env } from './config/env.js';
 import apiRoutes from './routes/index.js';
+import { getHealth } from './controllers/healthController.js';
 import { apiLimiter } from './middleware/rateLimiters.js';
 import { sanitizeInput } from './middleware/sanitizeInput.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -24,6 +25,9 @@ export function createApp() {
   app.use(cookieParser());
   app.use(sanitizeInput);
 
+  // Registered before the rate limiter so uptime monitors can check it as often as they like.
+  app.get('/api/health', getHealth);
+  app.head('/api/health', getHealth);
   app.use('/api', apiLimiter, apiRoutes);
 
   app.use(notFound);
