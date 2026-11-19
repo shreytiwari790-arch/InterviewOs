@@ -10,9 +10,7 @@ export function StatCard({ label, value, hint, icon: Icon, isLoading }) {
       {isLoading ? (
         <Skeleton className="mt-3 h-8 w-20" />
       ) : (
-        <p className="mt-2 text-[28px] leading-tight font-semibold tracking-tight text-slate-900 tabular-nums">
-          {value}
-        </p>
+        <p className="mt-2 text-[28px] leading-tight font-semibold tracking-tight text-ink-900 tabular-nums">{value}</p>
       )}
       {hint && <p className="mt-1 truncate text-xs text-slate-500">{hint}</p>}
     </div>

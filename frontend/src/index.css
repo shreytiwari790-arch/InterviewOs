@@ -1,35 +1,96 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/inter';
+@import '@fontsource/poppins/400.css';
+@import '@fontsource/poppins/500.css';
+@import '@fontsource/poppins/600.css';
+@import '@fontsource/poppins/700.css';
 
 @theme {
-  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  /* Primary accent. Change these values to re-theme the whole product. */
-  --color-brand-50: #eef2ff;
-  --color-brand-100: #e0e7ff;
-  --color-brand-200: #c7d2fe;
-  --color-brand-300: #a5b4fc;
-  --color-brand-400: #818cf8;
-  --color-brand-500: #6366f1;
-  --color-brand-600: #4f46e5;
-  --color-brand-700: #4338ca;
-  --color-brand-800: #3730a3;
-  --color-brand-900: #312e81;
-  --color-brand-950: #1e1b4b;
+  /* Brand teal, sampled from the InterviewOS logo. Change these to re-theme the product. */
+  --color-brand-50: #ecfdf7;
+  --color-brand-100: #d0f8ea;
+  --color-brand-200: #a3efd6;
+  --color-brand-300: #69e0bd;
+  --color-brand-400: #2cc9a0;
+  --color-brand-500: #12b38b;
+  --color-brand-600: #0a9a78;
+  --color-brand-700: #0a7b61;
+  --color-brand-800: #0c624f;
+  --color-brand-900: #0c5142;
+  --color-brand-950: #032e26;
+
+  /* Ink: the dark navy-charcoal of the logo wordmark, used for text and dark surfaces. */
+  --color-ink-500: #5b6274;
+  --color-ink-600: #444b5c;
+  --color-ink-700: #353b4b;
+  --color-ink-800: #2d3344;
+  --color-ink-900: #1f2330;
+  --color-ink-950: #14171f;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-fade-up: fade-up 0.6s ease-out both;
+  --animate-marquee: marquee 32s linear infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: 'cv11', 'ss01';
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-white text-slate-900;
+    @apply bg-white text-ink-900;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply text-ink-900;
   }
 
   ::selection {
     @apply bg-brand-100 text-brand-900;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }

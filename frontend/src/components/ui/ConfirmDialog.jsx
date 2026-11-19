@@ -28,7 +28,7 @@ export function ConfirmDialog({
       className="m-auto w-[min(92vw,420px)] rounded-2xl border border-slate-200 bg-white p-0 shadow-2xl backdrop:bg-slate-900/40 backdrop:backdrop-blur-[2px]"
     >
       <div className="p-6">
-        <h2 className="text-base font-semibold text-slate-900">{title}</h2>
+        <h2 className="text-base font-semibold text-ink-900">{title}</h2>
         {description && <p className="mt-2 text-sm leading-relaxed text-slate-500">{description}</p>}
         <div className="mt-6 flex justify-end gap-2">
           <Button variant="secondary" onClick={onClose} disabled={isLoading}>

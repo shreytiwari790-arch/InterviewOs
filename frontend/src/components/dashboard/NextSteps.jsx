@@ -21,7 +21,7 @@ export function NextSteps({ steps }) {
             <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand-50">
               <Icon className="size-4 text-brand-600" aria-hidden="true" />
             </span>
-            <span className="flex-1 text-sm font-medium text-slate-800">{step.title}</span>
+            <span className="flex-1 text-sm font-medium text-ink-800">{step.title}</span>
             {isAvailable ? (
               <ArrowRight
                 className="size-4 text-slate-300 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-500"

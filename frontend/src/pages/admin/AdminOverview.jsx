@@ -16,7 +16,7 @@ function MetricRow({ label, value }) {
   return (
     <div className="flex items-center justify-between py-3 text-sm">
       <span className="text-slate-600">{label}</span>
-      <span className="font-medium text-slate-900 tabular-nums">{value}</span>
+      <span className="font-medium text-ink-900 tabular-nums">{value}</span>
     </div>
   );
 }
@@ -84,7 +84,7 @@ export default function AdminOverview() {
                   <li key={user.id} className="flex items-center gap-3 py-3">
                     <Avatar name={user.name} />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-slate-900">{user.name}</p>
+                      <p className="truncate text-sm font-medium text-ink-900">{user.name}</p>
                       <p className="truncate text-xs text-slate-500">{user.email}</p>
                     </div>
                     {user.role === 'admin' && <Badge tone="brand">Admin</Badge>}

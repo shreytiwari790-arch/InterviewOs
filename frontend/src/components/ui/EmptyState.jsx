@@ -8,7 +8,7 @@ export function EmptyState({ icon: Icon, title, description, action, className }
           <Icon className="size-5 text-slate-400" aria-hidden="true" />
         </span>
       )}
-      <p className="text-sm font-medium text-slate-900">{title}</p>
+      <p className="text-sm font-medium text-ink-900">{title}</p>
       {description && <p className="mt-1 max-w-xs text-sm text-slate-500">{description}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>

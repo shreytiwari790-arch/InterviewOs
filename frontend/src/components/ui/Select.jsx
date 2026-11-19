@@ -5,7 +5,7 @@ export function Select({ options, className, ...props }) {
   return (
     <div className={cn('relative', className)}>
       <select
-        className="h-10 w-full appearance-none rounded-[10px] border border-slate-200 bg-white pr-9 pl-3 text-sm text-slate-800 shadow-xs transition hover:border-slate-300 focus:border-brand-500 focus:ring-4 focus:ring-brand-100 focus:outline-none"
+        className="h-10 w-full appearance-none rounded-xl border border-slate-200 bg-white pr-9 pl-3 text-sm text-ink-800 shadow-xs transition hover:border-slate-300 focus:border-brand-500 focus:ring-4 focus:ring-brand-100 focus:outline-none"
         {...props}
       >
         {options.map(({ value, label }) => (

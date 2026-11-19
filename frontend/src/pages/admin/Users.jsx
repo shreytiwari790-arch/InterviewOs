@@ -177,7 +177,7 @@ export default function Users() {
                         <div className="flex items-center gap-3">
                           <Avatar name={user.name} />
                           <div className="min-w-0">
-                            <p className="truncate font-medium text-slate-900">
+                            <p className="truncate font-medium text-ink-900">
                               {user.name} {isSelf && <span className="font-normal text-slate-400">(you)</span>}
                             </p>
                             <p className="truncate text-xs text-slate-500">{user.email}</p>

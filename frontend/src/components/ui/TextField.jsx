@@ -30,7 +30,7 @@ export function TextField({ label, labelAction, error, hint, icon: Icon, trailin
           aria-invalid={Boolean(error)}
           aria-describedby={message ? messageId : undefined}
           className={cn(
-            'h-11 w-full rounded-[10px] border bg-white px-3.5 text-sm text-slate-900 shadow-xs transition-[border-color,box-shadow] duration-150',
+            'h-11 w-full rounded-xl border bg-white px-3.5 text-sm text-ink-900 shadow-xs transition-[border-color,box-shadow] duration-150',
             'placeholder:text-slate-400 focus:ring-4 focus:outline-none',
             error
               ? 'border-red-300 focus:border-red-400 focus:ring-red-100'

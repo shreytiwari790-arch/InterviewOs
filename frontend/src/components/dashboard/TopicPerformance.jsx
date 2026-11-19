@@ -5,7 +5,7 @@ function TopicRow({ topic, score, tone }) {
     <li>
       <div className="flex items-center justify-between text-sm">
         <span className="truncate text-slate-700">{topic}</span>
-        <span className="font-medium text-slate-900 tabular-nums">{score}%</span>
+        <span className="font-medium text-ink-900 tabular-nums">{score}%</span>
       </div>
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
         <div

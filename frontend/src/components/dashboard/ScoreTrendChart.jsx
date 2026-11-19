@@ -6,7 +6,7 @@ function TrendTooltip({ active, payload }) {
   const point = payload[0].payload;
   return (
     <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow-lg">
-      <p className="font-medium text-slate-900">
+      <p className="font-medium text-ink-900">
         {point.company} · {point.score}%
       </p>
       <p className="mt-0.5 text-slate-500">{formatShortDate(point.completedAt)}</p>
@@ -23,8 +23,8 @@ export function ScoreTrendChart({ points }) {
         <AreaChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -20 }}>
           <defs>
             <linearGradient id="score-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#4f46e5" stopOpacity={0.18} />
-              <stop offset="100%" stopColor="#4f46e5" stopOpacity={0} />
+              <stop offset="0%" stopColor="#0a9a78" stopOpacity={0.18} />
+              <stop offset="100%" stopColor="#0a9a78" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid vertical={false} stroke="#f1f5f9" />
@@ -43,14 +43,14 @@ export function ScoreTrendChart({ points }) {
             axisLine={false}
             tickLine={false}
           />
-          <Tooltip content={<TrendTooltip />} cursor={{ stroke: '#c7d2fe' }} />
+          <Tooltip content={<TrendTooltip />} cursor={{ stroke: '#a3efd6' }} />
           <Area
             type="monotone"
             dataKey="score"
-            stroke="#4f46e5"
+            stroke="#0a9a78"
             strokeWidth={2}
             fill="url(#score-fill)"
-            dot={{ r: 3, fill: '#fff', stroke: '#4f46e5', strokeWidth: 2 }}
+            dot={{ r: 3, fill: '#fff', stroke: '#0a9a78', strokeWidth: 2 }}
             activeDot={{ r: 5 }}
           />
         </AreaChart>

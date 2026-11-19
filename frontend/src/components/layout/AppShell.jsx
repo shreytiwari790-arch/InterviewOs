@@ -27,16 +27,13 @@ function NavItem({ to, label, icon: Icon, end }) {
       to={to}
       end={end}
       className={({ isActive }) =>
-        cn(
-          baseClasses,
-          isActive ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
-        )
+        cn(baseClasses, isActive ? 'bg-brand-50 text-brand-800' : 'text-ink-600 hover:bg-slate-50 hover:text-ink-900')
       }
     >
       {({ isActive }) => (
         <>
           <Icon
-            className={cn('size-[18px]', isActive ? 'text-brand-600' : 'text-slate-400 group-hover:text-slate-500')}
+            className={cn('size-[18px]', isActive ? 'text-brand-600' : 'text-slate-400 group-hover:text-ink-500')}
             aria-hidden="true"
           />
           {label}
@@ -56,7 +53,7 @@ function SidebarContent({ navigation, homePath, badge }) {
           <Logo />
         </Link>
         {badge && (
-          <span className="rounded-md bg-slate-900 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-white uppercase">
+          <span className="rounded-md bg-ink-900 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-white uppercase">
             {badge}
           </span>
         )}
@@ -83,7 +80,7 @@ function SidebarContent({ navigation, homePath, badge }) {
         <div className="flex items-center gap-3 rounded-lg px-2 py-2">
           <Avatar name={user.name} />
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-slate-900">{user.name}</p>
+            <p className="truncate text-sm font-medium text-ink-900">{user.name}</p>
             <p className="truncate text-xs text-slate-500">{user.email}</p>
           </div>
           <button

@@ -16,7 +16,7 @@ export function RecentInterviews({ interviews }) {
               {interview.company.slice(0, 2).toUpperCase()}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-slate-900">
+              <p className="truncate text-sm font-medium text-ink-900">
                 {interview.company} · {interview.role}
               </p>
               <p className="text-xs text-slate-500">
