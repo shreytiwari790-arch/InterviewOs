@@ -17,7 +17,7 @@ export default function Register() {
     { name: '', email: '', password: '' },
     async (details) => {
       await register(details);
-      navigate(paths.dashboard, { replace: true });
+      navigate(paths.start, { replace: true });
     },
   );
 

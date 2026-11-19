@@ -14,7 +14,15 @@ const resumeSchema = new mongoose.Schema(
     failureReason: String,
     analyzedAt: Date,
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+    toJSON: {
+      transform(doc, ret) {
+        const { _id, __v, extractedText, user, ...rest } = ret;
+        return { id: _id.toString(), ...rest };
+      },
+    },
+  },
 );
 
 resumeSchema.index({ user: 1, createdAt: -1 });

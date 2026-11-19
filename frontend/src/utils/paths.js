@@ -2,6 +2,7 @@ export const paths = {
   home: '/',
   login: '/login',
   register: '/register',
+  start: '/start',
   dashboard: '/dashboard',
   resume: '/resume',
   newInterview: '/interviews/new',
@@ -15,17 +16,12 @@ export const paths = {
   adminStatistics: '/admin/statistics',
 };
 
-// Pages that ship in later build phases. Links to them render disabled until the page exists.
-export const upcomingPaths = new Set([
-  paths.resume,
-  paths.newInterview,
-  paths.interviewHistory,
-  paths.adminCompanies,
-  paths.adminPatterns,
-  paths.adminQuestions,
-  paths.adminStatistics,
-]);
-
 export const interviewPath = (interviewId) => `/interviews/${interviewId}`;
+export const reportPath = (interviewId) => `/interviews/${interviewId}/report`;
 
-export const homePathFor = (user) => (user?.role === 'admin' ? paths.admin : paths.dashboard);
+export const adminCompanyPath = (companyId) => `/admin/companies/${companyId}`;
+export const adminRoleEditorPath = (companyId, blueprintId = 'new') =>
+  `/admin/companies/${companyId}/roles/${blueprintId}`;
+
+// After signing in, candidates land on their start page and admins on the admin panel.
+export const homePathFor = (user) => (user?.role === 'admin' ? paths.admin : paths.start);

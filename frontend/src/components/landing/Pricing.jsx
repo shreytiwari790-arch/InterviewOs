@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { Check } from 'lucide-react';
 import { pricingPlans } from '../../content/marketing';
 import { cn } from '../../utils/cn';
+import { useStartCta } from '../../hooks/useStartCta';
 import { buttonClasses } from '../ui/buttonStyles';
 import { SectionHeading } from './SectionHeading';
 
@@ -18,6 +19,8 @@ function PlanLink({ href, className, children }) {
 }
 
 export function Pricing() {
+  const startCta = useStartCta();
+
   return (
     <section id="pricing" className="scroll-mt-20 py-24 sm:py-28">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
@@ -81,7 +84,7 @@ export function Pricing() {
               </ul>
 
               <PlanLink
-                href={plan.href}
+                href={plan.href === '/register' ? startCta.to : plan.href}
                 className={buttonClasses({
                   variant: plan.isFeatured ? 'primary' : 'secondary',
                   size: 'lg',

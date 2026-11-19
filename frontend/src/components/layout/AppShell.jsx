@@ -3,24 +3,11 @@ import { Link, NavLink, Outlet } from 'react-router';
 import { LogOut, Menu, X } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { cn } from '../../utils/cn';
-import { upcomingPaths } from '../../utils/paths';
 import { Avatar } from '../ui/Avatar';
 import { Logo } from '../ui/Logo';
 
 function NavItem({ to, label, icon: Icon, end }) {
   const baseClasses = 'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors';
-
-  if (upcomingPaths.has(to)) {
-    return (
-      <span className={cn(baseClasses, 'cursor-default text-slate-400')} aria-disabled="true">
-        <Icon className="size-[18px] text-slate-300" aria-hidden="true" />
-        {label}
-        <span className="ml-auto rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-slate-400 uppercase">
-          Soon
-        </span>
-      </span>
-    );
-  }
 
   return (
     <NavLink

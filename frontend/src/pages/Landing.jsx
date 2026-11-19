@@ -15,6 +15,7 @@ import {
   Target,
   UploadCloud,
 } from 'lucide-react';
+import { ActiveInterviewBar } from '../components/landing/ActiveInterviewBar';
 import { Contact } from '../components/landing/Contact';
 import { Faq } from '../components/landing/Faq';
 import { Footer } from '../components/landing/Footer';
@@ -26,7 +27,8 @@ import { buttonClasses } from '../components/ui/buttonStyles';
 import { companies, testimonials } from '../content/marketing';
 import interviewPhoto from '../assets/images/interview-conversation.jpg';
 import teamPhoto from '../assets/images/team-workspace.jpg';
-import { paths } from '../utils/paths';
+import { useAuth } from '../hooks/useAuth';
+import { useStartCta } from '../hooks/useStartCta';
 
 const steps = [
   {
@@ -140,6 +142,7 @@ function HowItWorks() {
 }
 
 function PracticeSpotlight() {
+  const startCta = useStartCta('Get started free');
   return (
     <section className="bg-brand-50/50 py-24 sm:py-28">
       <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 sm:px-8 lg:grid-cols-2 lg:gap-20">
@@ -177,11 +180,8 @@ function PracticeSpotlight() {
               </li>
             ))}
           </ul>
-          <Link
-            to={paths.register}
-            className={buttonClasses({ variant: 'dark', size: 'lg', className: 'group mt-10' })}
-          >
-            Get started free
+          <Link to={startCta.to} className={buttonClasses({ variant: 'dark', size: 'lg', className: 'group mt-10' })}>
+            {startCta.label}
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
           </Link>
         </div>
@@ -279,6 +279,7 @@ function Testimonials() {
 }
 
 function FinalCta() {
+  const startCta = useStartCta();
   return (
     <section className="px-5 pb-24 sm:px-8">
       <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[32px] bg-ink-900 px-6 py-16 text-center sm:px-16 sm:py-20">
@@ -294,10 +295,10 @@ function FinalCta() {
             Upload your resume, choose a company and get a personalised mock interview in minutes.
           </p>
           <Link
-            to={paths.register}
+            to={startCta.to}
             className={buttonClasses({ variant: 'primary', size: 'lg', className: 'group mt-10' })}
           >
-            Try now for free
+            {startCta.label}
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
           </Link>
         </div>
@@ -307,9 +308,12 @@ function FinalCta() {
 }
 
 export default function Landing() {
+  const { user } = useAuth();
+
   return (
     <div className="bg-white">
       <Navbar />
+      {user?.role === 'candidate' && <ActiveInterviewBar />}
       <main>
         <Hero />
         <CompaniesMarquee />

@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Interview } from '../models/Interview.js';
 import { InterviewReport } from '../models/InterviewReport.js';
 import { Resume } from '../models/Resume.js';
+import { getLatestProfile } from './resumeService.js';
 
 const RECENT_LIMIT = 5;
 const TREND_LIMIT = 10;
@@ -67,11 +68,11 @@ function buildNextSteps({ resume, activeInterview, completedCount, weakTopics })
 export async function getCandidateDashboard(userId) {
   const userObjectId = new mongoose.Types.ObjectId(userId);
 
-  const [resume, activeInterview, recentCompleted, [scoreSummary], recentReports] = await Promise.all([
+  const [resume, activeInterview, recentCompleted, [scoreSummary], recentReports, profile] = await Promise.all([
     Resume.findOne({ user: userId }).sort({ createdAt: -1 }).select('fileName status updatedAt'),
-    Interview.findOne({ user: userId, status: 'in_progress' })
-      .sort({ startedAt: -1 })
-      .select('company role startedAt expiresAt'),
+    Interview.findOne({ user: userId, status: { $in: ['ready', 'in_progress'] } })
+      .sort({ createdAt: -1 })
+      .select('company role status startedAt expiresAt'),
     Interview.find({ user: userId, status: 'completed' })
       .sort({ completedAt: -1 })
       .limit(TREND_LIMIT)
@@ -83,13 +84,20 @@ export async function getCandidateDashboard(userId) {
       },
     ]),
     InterviewReport.find({ user: userId }).sort({ createdAt: -1 }).limit(TOPIC_REPORT_LIMIT).select('topicScores'),
+    getLatestProfile(userId),
   ]);
 
   const completedCount = scoreSummary?.count ?? 0;
   const topics = summarizeTopics(recentReports);
 
   return {
-    resume: resume && { fileName: resume.fileName, status: resume.status, updatedAt: resume.updatedAt },
+    resume: resume && { id: resume.id, fileName: resume.fileName, status: resume.status, updatedAt: resume.updatedAt },
+    profile: profile && {
+      summary: profile.summary,
+      experienceLevel: profile.estimatedExperienceLevel,
+      topSkills: [...profile.programmingLanguages, ...profile.frameworks, ...profile.tools].slice(0, 10),
+      focusAreas: profile.suggestedFocusAreas.slice(0, 3).map(({ topic }) => topic),
+    },
     stats: {
       completedInterviews: completedCount,
       averageScore: scoreSummary ? Math.round(scoreSummary.average) : null,
@@ -99,6 +107,7 @@ export async function getCandidateDashboard(userId) {
       id: activeInterview.id,
       company: activeInterview.company.name,
       role: activeInterview.role.name,
+      status: activeInterview.status,
       startedAt: activeInterview.startedAt,
       expiresAt: activeInterview.expiresAt,
     },

@@ -3,7 +3,9 @@ import { Link } from 'react-router';
 import { ArrowRight, Check, Clock3, Quote, SendHorizontal } from 'lucide-react';
 import { sampleQuestions } from '../../content/marketing';
 import { cn } from '../../utils/cn';
-import { paths } from '../../utils/paths';
+import { useAuth } from '../../hooks/useAuth';
+import { useStartCta } from '../../hooks/useStartCta';
+import { firstName } from '../../utils/format';
 import { buttonClasses } from '../ui/buttonStyles';
 
 const ROTATE_EVERY_MS = 4500;
@@ -88,6 +90,9 @@ function QuestionShowcase() {
 }
 
 export function Hero() {
+  const { user } = useAuth();
+  const startCta = useStartCta();
+
   return (
     <section className="relative overflow-hidden">
       <div
@@ -97,7 +102,7 @@ export function Hero() {
       <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 pt-12 pb-20 sm:px-8 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:pt-20 lg:pb-28">
         <div className="animate-fade-up">
           <span className="inline-flex items-center rounded-full bg-brand-100/80 px-4 py-1.5 text-sm font-medium text-brand-800">
-            AI mock interviews, tailored to you
+            {user ? `Welcome back, ${firstName(user.name)}` : 'AI mock interviews, tailored to you'}
           </span>
           <h1 className="mt-6 text-[40px] leading-[1.12] font-semibold tracking-tight sm:text-5xl lg:text-[54px]">
             Walk in already knowing <span className="block text-brand-600">what they&apos;ll ask</span>
@@ -108,8 +113,8 @@ export function Hero() {
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-4">
-            <Link to={paths.register} className={buttonClasses({ variant: 'dark', size: 'lg', className: 'group' })}>
-              Try now for free
+            <Link to={startCta.to} className={buttonClasses({ variant: 'dark', size: 'lg', className: 'group' })}>
+              {startCta.label}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
             </Link>
             <a

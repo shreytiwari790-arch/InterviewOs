@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { Badge } from '../ui/Badge';
 import { formatDate, scoreTone } from '../../utils/format';
-import { interviewPath } from '../../utils/paths';
+import { reportPath } from '../../utils/paths';
 
 export function RecentInterviews({ interviews }) {
   return (
@@ -9,7 +9,7 @@ export function RecentInterviews({ interviews }) {
       {interviews.map((interview) => (
         <li key={interview.id}>
           <Link
-            to={interviewPath(interview.id)}
+            to={reportPath(interview.id)}
             className="-mx-2 flex items-center gap-4 rounded-lg px-2 py-3 transition-colors hover:bg-slate-50"
           >
             <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700">

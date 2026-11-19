@@ -11,7 +11,8 @@ import { errorHandler, notFound } from './middleware/errorHandler.js';
 export function createApp() {
   const app = express();
 
-  app.set('trust proxy', 1); // Render and Vercel sit in front of the app; needed for correct client IPs.
+  // Needed so rate limiting sees the real client IP behind Render (and Vercel's rewrite).
+  app.set('trust proxy', env.TRUST_PROXY_HOPS);
   app.use(helmet());
   app.use(
     cors({

@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight, Menu, X } from 'lucide-react';
+import { ArrowRight, LogOut, Menu, X } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { cn } from '../../utils/cn';
-import { homePathFor, paths } from '../../utils/paths';
+import { paths } from '../../utils/paths';
 import { buttonClasses } from '../ui/buttonStyles';
+import { Avatar } from '../ui/Avatar';
 import { Logo } from '../ui/Logo';
+import { useStartCta } from '../../hooks/useStartCta';
 
 const sectionLinks = [
   { href: '#how-it-works', label: 'How it works' },
@@ -16,7 +18,8 @@ const sectionLinks = [
 ];
 
 export function Navbar() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const startCta = useStartCta('Try for free');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -28,17 +31,37 @@ export function Navbar() {
   }, []);
 
   const actions = user ? (
-    <Link to={homePathFor(user)} className={buttonClasses({ variant: 'dark', size: 'sm' })}>
-      Open dashboard
-      <ArrowRight className="size-4" aria-hidden="true" />
-    </Link>
+    <>
+      <Link
+        to={user.role === 'admin' ? paths.admin : paths.dashboard}
+        className="px-3 text-sm font-medium text-ink-700 transition-colors hover:text-ink-900"
+      >
+        {user.role === 'admin' ? 'Admin panel' : 'Dashboard'}
+      </Link>
+      <Link to={startCta.to} className={buttonClasses({ variant: 'dark', size: 'sm' })}>
+        {startCta.label}
+        <ArrowRight className="size-4" aria-hidden="true" />
+      </Link>
+      <span className="ml-1 flex items-center gap-1">
+        <Avatar name={user.name} />
+        <button
+          type="button"
+          onClick={logout}
+          className="rounded-full p-2 text-ink-500 transition-colors hover:bg-slate-100 hover:text-ink-800"
+          aria-label="Sign out"
+          title="Sign out"
+        >
+          <LogOut className="size-4" aria-hidden="true" />
+        </button>
+      </span>
+    </>
   ) : (
     <>
       <Link to={paths.login} className="px-3 text-sm font-medium text-ink-700 transition-colors hover:text-ink-900">
         Sign in
       </Link>
-      <Link to={paths.register} className={buttonClasses({ variant: 'dark', size: 'sm' })}>
-        Try for free
+      <Link to={startCta.to} className={buttonClasses({ variant: 'dark', size: 'sm' })}>
+        {startCta.label}
       </Link>
     </>
   );

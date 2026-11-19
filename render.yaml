@@ -1,0 +1,29 @@
+# Render Blueprint for the InterviewOS API (Dashboard → New → Blueprint, or create the service by hand
+# with the same settings). Secrets marked sync:false are entered in the Render dashboard.
+services:
+  - type: web
+    name: interviewos-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: CLIENT_URL
+        sync: false
+      # The browser reaches the API through Vercel's /api rewrite, then Render's proxy: two hops.
+      - key: TRUST_PROXY_HOPS
+        value: "2"

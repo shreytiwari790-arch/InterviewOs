@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { useAuth } from '../../hooks/useAuth';
 import { paths } from '../../utils/paths';
 import { Logo } from '../ui/Logo';
 
@@ -18,16 +19,20 @@ const columns = [
       { href: '#contact', label: 'Contact' },
     ],
   },
-  {
-    title: 'Account',
-    links: [
-      { to: paths.login, label: 'Sign in' },
-      { to: paths.register, label: 'Try for free' },
-    ],
-  },
 ];
 
 export function Footer() {
+  const { user } = useAuth();
+  const accountLinks = user
+    ? [
+        { to: paths.dashboard, label: 'Dashboard' },
+        { to: paths.newInterview, label: 'New interview' },
+      ]
+    : [
+        { to: paths.login, label: 'Sign in' },
+        { to: paths.register, label: 'Try for free' },
+      ];
+
   return (
     <footer className="border-t border-slate-200/80 bg-white">
       <div className="mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 md:grid-cols-[1.4fr_2fr]">
@@ -38,7 +43,7 @@ export function Footer() {
           </p>
         </div>
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
-          {columns.map(({ title, links }) => (
+          {[...columns, { title: 'Account', links: accountLinks }].map(({ title, links }) => (
             <div key={title}>
               <p className="text-sm font-semibold text-ink-900">{title}</p>
               <ul className="mt-4 space-y-3 text-sm text-ink-500">

@@ -11,6 +11,10 @@ const envSchema = z.object({
   CLIENT_URL: z.string().min(1, 'is required'),
   OPENAI_API_KEY: z.string().optional(),
   OPENAI_MODEL: z.string().min(1).default('gpt-4o-mini'),
+  // Optional: point the OpenAI SDK at a compatible endpoint (proxy, Azure gateway, local test server).
+  OPENAI_BASE_URL: z.string().url().optional().or(z.literal('')),
+  // Number of proxies in front of the API: 1 for Render alone, 2 when traffic arrives through the Vercel /api rewrite.
+  TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(1),
   ADMIN_EMAIL: z.string().optional(),
   ADMIN_PASSWORD: z.string().optional(),
 });

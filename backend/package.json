@@ -6,7 +6,7 @@
   "type": "module",
   "main": "src/server.js",
   "engines": {
-    "node": ">=20"
+    "node": ">=20.16"
   },
   "scripts": {
     "dev": "node --watch src/server.js",
@@ -23,10 +23,16 @@
     "express-rate-limit": "^8.7.5",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
+    "mammoth": "^1.13.0",
     "mongoose": "^9.12.2",
+    "multer": "^2.5.0",
+    "openai": "^7.60.0",
+    "pdf-parse": "^2.4.5",
+    "pdfkit": "^0.20.2",
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@napi-rs/canvas": "^0.1.80",
     "mongodb-memory-server-core": "^11.3.0",
     "supertest": "^7.3.2"
   }
