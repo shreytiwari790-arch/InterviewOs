@@ -174,7 +174,7 @@ cookie blocking in Safari and Chrome.
 
 ```text
 Browser ──► https://your-app.vercel.app        (React build)
-        └─► https://your-app.vercel.app/api/*  ──rewrite──►  https://interviewos-api.onrender.com/api/*
+        └─► https://your-app.vercel.app/api/*  ──rewrite──►  https://interviewos-api-mz96.onrender.com/api/*
 ```
 
 ### 1. MongoDB Atlas
@@ -207,7 +207,7 @@ Environment variables:
 | `CLIENT_URL` | your Vercel URL, e.g. `https://interviewos.vercel.app` (comma-separate extra domains) |
 | `TRUST_PROXY_HOPS` | `2` |
 
-If you name the service anything other than `interviewos-api`, update the URL in `frontend/vercel.json`.
+The live API is `https://interviewos-api-mz96.onrender.com`. If the Render URL changes, update it in `frontend/vercel.json`.
 
 ### 3. Frontend on Vercel
 
