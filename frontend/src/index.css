@@ -58,6 +58,15 @@
       transform: translateY(0);
     }
   }
+
+  @keyframes upload-bar {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(300%);
+    }
+  }
 }
 
 @layer base {

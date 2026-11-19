@@ -8,17 +8,21 @@ import {
   FileText,
   FileUp,
   PlayCircle,
+  History,
   RotateCcw,
   Sparkles,
+  Target,
 } from 'lucide-react';
+import { RecentInterviews } from '../../components/dashboard/RecentInterviews';
 import { buttonClasses } from '../../components/ui/buttonStyles';
+import { Panel } from '../../components/ui/Panel';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { useApi } from '../../hooks/useApi';
 import { useAuth } from '../../hooks/useAuth';
 import { dashboardService } from '../../services/dashboardService';
-import { cn } from '../../utils/cn';
-import { firstName, formatDate, scoreTone } from '../../utils/format';
-import { interviewPath, paths, reportPath } from '../../utils/paths';
+import { firstName } from '../../utils/format';
+import { experienceLabels } from '../../utils/labels';
+import { interviewPath, paths } from '../../utils/paths';
 
 const steps = [
   { icon: FileUp, title: 'Upload your resume', text: 'We read your skills, projects and experience.' },
@@ -27,7 +31,7 @@ const steps = [
   { icon: BarChart3, title: 'Interview and report', text: 'Timed, one question at a time, then detailed feedback.' },
 ];
 
-const scoreClasses = { success: 'text-brand-700', warning: 'text-amber-600', danger: 'text-red-600' };
+const linkClasses = 'text-sm font-semibold text-brand-700 transition-colors hover:text-brand-800';
 
 function StatPill({ icon: Icon, label, value, isLoading }) {
   return (
@@ -156,77 +160,85 @@ export default function Start() {
         </ol>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section className="rounded-3xl border border-slate-200 bg-white p-6">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-ink-900">Your resume</h2>
-            <Link to={paths.resume} className="text-sm font-semibold text-brand-700 hover:text-brand-800">
+      <div className="grid gap-6 lg:grid-cols-[1fr_1.15fr]">
+        <Panel
+          icon={FileText}
+          title="Your resume"
+          description="Questions are built around this profile"
+          action={
+            <Link to={paths.resume} className={linkClasses}>
               {hasResume ? 'View analysis' : 'Upload'}
             </Link>
-          </div>
+          }
+        >
           {isLoading && !data ? (
-            <Skeleton className="mt-4 h-20" />
+            <Skeleton className="h-28 rounded-2xl" />
           ) : hasResume ? (
-            <div className="mt-4 space-y-4">
+            <div className="space-y-5">
+              <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-3">
+                <span className="flex size-10 items-center justify-center rounded-xl bg-white shadow-xs">
+                  <FileText className="size-5 text-brand-600" aria-hidden="true" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-ink-900">{data.resume?.fileName}</p>
+                  <p className="text-xs text-ink-500">{experienceLabels[data.profile.experienceLevel] ?? 'Analysed'}</p>
+                </div>
+                <CheckCircle2 className="size-5 text-brand-500" aria-label="Analysed" />
+              </div>
               <div className="flex flex-wrap gap-1.5">
                 {data.profile.topSkills.map((skill) => (
-                  <span key={skill} className="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-800">
+                  <span
+                    key={skill}
+                    className="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-800 ring-1 ring-brand-100 ring-inset"
+                  >
                     {skill}
                   </span>
                 ))}
               </div>
               {data.profile.focusAreas.length > 0 && (
-                <p className="text-sm text-ink-600">
-                  <span className="font-medium text-ink-800">Prepare next:</span> {data.profile.focusAreas.join(', ')}
-                </p>
+                <div className="rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
+                  <p className="flex items-center gap-2 text-xs font-semibold tracking-wider text-amber-800 uppercase">
+                    <Target className="size-3.5" aria-hidden="true" />
+                    Prepare next
+                  </p>
+                  <p className="mt-1.5 text-sm text-ink-700">{data.profile.focusAreas.join(' · ')}</p>
+                </div>
               )}
             </div>
           ) : (
-            <p className="mt-4 text-sm leading-relaxed text-ink-500">
-              No resume yet. Upload one in the first step so questions are built around your own projects.
-            </p>
+            <div className="flex flex-col items-start gap-4">
+              <p className="text-sm leading-relaxed text-ink-500">
+                No resume yet. Upload one in the first step so questions are built around your own projects.
+              </p>
+              <Link to={paths.resume} className={buttonClasses({ size: 'sm', variant: 'dark' })}>
+                <FileUp className="size-4" aria-hidden="true" />
+                Upload resume
+              </Link>
+            </div>
           )}
-        </section>
+        </Panel>
 
-        <section className="rounded-3xl border border-slate-200 bg-white p-6">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-ink-900">Recent interviews</h2>
-            <Link to={paths.dashboard} className="text-sm font-semibold text-brand-700 hover:text-brand-800">
+        <Panel
+          icon={History}
+          title="Recent interviews"
+          description="Tap one to open its report"
+          action={
+            <Link to={paths.dashboard} className={linkClasses}>
               Open dashboard
             </Link>
-          </div>
+          }
+        >
           {isLoading && !data ? (
-            <Skeleton className="mt-4 h-20" />
+            <Skeleton className="h-28 rounded-2xl" />
           ) : recent.length ? (
-            <ul className="mt-3 divide-y divide-slate-100">
-              {recent.map((interview) => (
-                <li key={interview.id}>
-                  <Link to={reportPath(interview.id)} className="flex items-center gap-3 py-3">
-                    <span className="flex size-9 items-center justify-center rounded-xl bg-ink-900 text-xs font-semibold text-white">
-                      {interview.company.slice(0, 2).toUpperCase()}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium text-ink-900">
-                        {interview.company} · {interview.role}
-                      </span>
-                      <span className="text-xs text-ink-500">{formatDate(interview.completedAt)}</span>
-                    </span>
-                    <span
-                      className={cn('text-sm font-semibold tabular-nums', scoreClasses[scoreTone(interview.score)])}
-                    >
-                      {interview.score}%
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <RecentInterviews interviews={recent} />
           ) : (
-            <div className="mt-4 flex items-center gap-3 text-sm text-ink-500">
-              <PlayCircle className="size-5 text-slate-300" aria-hidden="true" />
+            <div className="flex items-center gap-3 rounded-2xl bg-slate-50 p-4 text-sm text-ink-500">
+              <PlayCircle className="size-5 shrink-0 text-brand-400" aria-hidden="true" />
               Your completed interviews and scores will appear here.
             </div>
           )}
-        </section>
+        </Panel>
       </div>
     </div>
   );

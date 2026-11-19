@@ -4,8 +4,8 @@ export function EmptyState({ icon: Icon, title, description, action, className }
   return (
     <div className={cn('flex flex-col items-center justify-center px-6 py-10 text-center', className)}>
       {Icon && (
-        <span className="mb-3 flex size-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50">
-          <Icon className="size-5 text-slate-400" aria-hidden="true" />
+        <span className="mb-3 flex size-11 items-center justify-center rounded-2xl bg-brand-50 ring-1 ring-brand-100">
+          <Icon className="size-5 text-brand-500" aria-hidden="true" />
         </span>
       )}
       <p className="text-sm font-medium text-ink-900">{title}</p>
