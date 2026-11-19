@@ -2,6 +2,7 @@ import { env } from './config/env.js';
 import { connectDatabase, disconnectDatabase } from './config/db.js';
 import { createApp } from './app.js';
 
+// Entry point: connects to MongoDB, then starts the HTTP server.
 async function start() {
   try {
     await connectDatabase(env.MONGODB_URI);
@@ -19,6 +20,7 @@ async function start() {
     console.log(`InterviewOS API running on http://localhost:${env.PORT} (${env.NODE_ENV})`);
   });
 
+  // Graceful shutdown: stop accepting new connections, then close the DB connection.
   const shutdown = (signal) => {
     console.log(`${signal} received, shutting down`);
     server.close(async () => {

@@ -4,6 +4,8 @@ import { User } from '../models/User.js';
 import { AppError } from '../utils/AppError.js';
 import { AUTH_COOKIE_NAME } from '../utils/authCookie.js';
 
+// Middleware: verifies the JWT stored in the HTTP-only cookie and attaches the user to req.user.
+// Throws 401 if the token is missing, expired, or the user's session has been invalidated.
 export async function requireAuth(req, res, next) {
   const token = req.cookies?.[AUTH_COOKIE_NAME];
   if (!token) throw new AppError(401, 'Please sign in to continue');
@@ -25,6 +27,7 @@ export async function requireAuth(req, res, next) {
   next();
 }
 
+// Middleware factory: restricts access to users whose role matches one of the provided roles.
 export function requireRole(...roles) {
   return (req, res, next) => {
     if (!roles.includes(req.user?.role)) {

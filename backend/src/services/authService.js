@@ -19,12 +19,14 @@ export function hashPassword(password) {
   return bcrypt.hash(password, BCRYPT_ROUNDS);
 }
 
+// Creates a signed JWT for the user, encoding their ID and sessionVersion as claims.
 export function createSessionToken(user) {
   return jwt.sign({ sub: user.id, ver: user.sessionVersion }, env.JWT_SECRET, {
     expiresIn: `${SESSION_DURATION_DAYS}d`,
   });
 }
 
+// Registers a new user: checks for duplicate email, hashes the password, and persists the record.
 export async function registerUser({ name, email, password }) {
   if (await User.exists({ email })) {
     throw new AppError(409, 'An account with this email already exists', [
@@ -35,6 +37,7 @@ export async function registerUser({ name, email, password }) {
   return User.create({ name, email, passwordHash: await hashPassword(password), lastLoginAt: new Date() });
 }
 
+// Authenticates a user: always runs bcrypt compare (even for unknown emails) to prevent timing attacks.
 export async function authenticateUser({ email, password }) {
   const user = await User.findOne({ email }).select('+passwordHash');
   const passwordMatches = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_PASSWORD_HASH);
@@ -47,6 +50,7 @@ export async function authenticateUser({ email, password }) {
   return user;
 }
 
+// Generates a secure reset token, stores its SHA-256 hash in the DB, and emails the reset link.
 export async function requestPasswordReset(email) {
   const user = await User.findOne({ email, isActive: true });
   if (!user) return; // Same response either way, so emails cannot be enumerated.
