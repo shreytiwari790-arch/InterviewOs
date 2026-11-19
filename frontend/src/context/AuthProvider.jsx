@@ -5,7 +5,7 @@ import { authService } from '../services/authService';
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
+// isloading
   useEffect(() => {
     authService
       .getCurrentUser()
